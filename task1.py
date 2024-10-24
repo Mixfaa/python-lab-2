@@ -60,7 +60,6 @@ gpd_2006_2015_top15 = gpd_2006_2015[
 
 energy_top15 = energy[energy["Country"].isin(scimagojr_top15["Country"])]
 
-
 scimagojr_energy_merged = pd.merge(scimagojr, energy_top15, on="Country")
 final_merged = pd.merge(scimagojr_energy_merged, gpd_2006_2015_top15, on="Country")
 final_merged.set_index("Country", inplace=True)
@@ -68,6 +67,7 @@ final_merged.set_index("Country", inplace=True)
 # print(final_merged.head(3))
 # print(final_merged.shape)
 # print(final_merged.columns)
+
 
 # task 8
 def avg_gpd():
@@ -79,6 +79,7 @@ def avg_gpd():
 
 
 # print(avg_gpd())
+
 
 # task 9
 def gpd_delta():
@@ -106,10 +107,7 @@ def max_renewable_percent():
 
 # task 11
 def add_population():
-    final_merged["Estimated population"] = final_merged["Energy Supply"] / final_merged[
-        "Energy Supply per Capita"
-    ].replace(0, np.nan)
-
+    final_merged["Estimated population"] = final_merged["Energy Supply"] / final_merged["Energy Supply per Capita"].replace(0, np.nan)
 
 def get_six_country_by_population():
     population_sorted = final_merged["Estimated population"].sort_values(
@@ -121,7 +119,6 @@ def get_six_country_by_population():
 
 
 add_population()
-
 # print(get_six_country_by_population())
 
 
@@ -131,13 +128,9 @@ def add_citations_per_person():
         final_merged["Citations"] / final_merged["Estimated population"]
     )
 
-
 def get_correlation_task_12():
-    correlation = final_merged["Citations per Person"].corr(
-        final_merged["Energy Supply per Capita"]
-    )
+    correlation = final_merged["Citations per Person"].corr(final_merged["Energy Supply per Capita"])
     return correlation
-
 
 add_citations_per_person()
 # print(get_correlation_task_12())
@@ -150,18 +143,15 @@ def add_renewable_above_median():
         final_merged["% Renewable"] >= median
     ).astype(int)
 
-
 def get_renewable_above_median_to_rank():
     return final_merged[["Renewable Above Median", "Rank"]].sort_values(by="Rank")
 
-
 add_renewable_above_median()
-
 # print(get_renewable_above_median_to_rank())
 
 
 # task 14
-ContinentDict = {
+сontinentDict = {
     "China": "Asia",
     "United States": "North America",
     "Japan": "Asia",
@@ -179,17 +169,14 @@ ContinentDict = {
     "Brazil": "South America",
 }
 
-
 def add_continent():
-    final_merged["Continent"] = final_merged.index.to_series().map(ContinentDict)
-
+    final_merged["Continent"] = final_merged.index.to_series().map(сontinentDict)
 
 def groupby_continent():
     population_stats = final_merged.groupby("Continent")["Estimated population"].agg(
         ["size", "sum", "mean", "std"]
     )
     return population_stats
-
 
 add_continent()
 # print(groupby_continent())
@@ -203,6 +190,7 @@ continent_colors = {
     "South America": "yellow",
     "Australia": "purple",
 }
+
 
 def show_chart():
     final_merged["Color"] = final_merged["Continent"].map(continent_colors)
@@ -221,6 +209,5 @@ def show_chart():
     plt.ylabel("% Renewable")
     plt.title("% Renewable vs. Rank (size by 2015 GDP, color by continent)")
     plt.show()
-
 
 show_chart()
